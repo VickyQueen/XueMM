@@ -1,0 +1,90 @@
+package com.suning.snmessenger.apps;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.suning.snmessenger.R;
+import com.suning.snmessenger.SNBaseActivity;
+import com.suning.snmessenger.http.HttpSubscribeApps;
+import com.suning.snmessenger.model.ApplicationBean;
+import com.suning.snmessenger.tools.IconText;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class AppListActivity extends SNBaseActivity implements View.OnClickListener {
+
+    private ListView mAppListView;
+
+    private AppListAdapter mAppAdapter;
+
+    private IconText mBack;
+    private TextView mTitleText;
+    private IconText mSearchIcon;
+    private TextView mAddState;
+    private List<ApplicationBean> mAppListData = new ArrayList<ApplicationBean>();
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_app_list);
+        initView();
+    }
+
+    private void initView() {
+        initTitle();
+        mAppListView = (ListView) findViewById(R.id.app_list);
+        mAddState = (TextView) findViewById(R.id.add_app_key);
+        //TODO test data
+        mHttpSubscribeApps = new HttpSubscribeApps();
+        mAppListData = mHttpSubscribeApps.getMyApps();
+        ApplicationBean bean;
+        for (int i = 0; i < 8; i++) {
+            mAppListData.add(bean);
+        }
+        //end
+        mAppAdapter = new AppListAdapter(mAppListData, this);
+        mAppListView.setAdapter(mAppAdapter);
+    }
+
+    private void initTitle() {
+        mBack = (IconText) findViewById(R.id.title_icon1);
+        mTitleText = (TextView) findViewById(R.id.title_text);
+        mSearchIcon = (IconText) findViewById(R.id.title_icon3);
+        IconText icon = (IconText) findViewById(R.id.title_icon2);
+        icon.setVisibility(View.GONE);
+        mBack.setOnClickListener(this);
+        mSearchIcon.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_icon1:
+                finish();
+                break;
+            case R.id.title_icon3:
+                //search button is clicked
+                Intent intent = new Intent();
+                intent.setClass(this, AppSearchActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
+}
+
+
